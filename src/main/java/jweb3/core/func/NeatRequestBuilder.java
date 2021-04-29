@@ -41,5 +41,21 @@ public class NeatRequestBuilder{
   }
 
 
+  public NeatRequestBuilder uint(@Nonnull @PositiveOrZero final BigInteger value) {
+    this.builder.addUintArg(value);
+    return this;
+  }
+
+  public NeatRequestBuilder uint(@PositiveOrZero final long value) {
+    this.builder.addUintArg(value);
+    return this;
+  }
+
+  public NeatRequestBuilder uintArray(@Min(8) @Max(256) final int bitSize,
+      @Nonnull @PositiveOrZero final BigInteger ... value) {
+    this.builder.addUintArrayArg(bitSize, value);
+    return this;
+  }
+
 
 }

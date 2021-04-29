@@ -2,9 +2,7 @@ package jweb3.core.func;
 
 import java.util.ArrayList;
 import javax.annotation.Nonnull;
-import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Function;
 
 public class FunctionBuilder {
 
@@ -34,7 +32,7 @@ public class FunctionBuilder {
 
   public String buildAndEncode() {
 
-    return FunctionEncoder.encode(this.build());
+    return this.build().encode();
   }
 
 
