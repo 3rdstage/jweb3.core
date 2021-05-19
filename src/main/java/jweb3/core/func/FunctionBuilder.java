@@ -8,24 +8,24 @@ public class FunctionBuilder {
 
   private String name = null;
 
-  final private RequestBuilder reqBuilder = new RequestBuilder();
+  final private InputBuilder inputBuilder = new InputBuilder();
 
   @Nonnull
-  public RequestBuilder getRequestBuilder() { return this.reqBuilder; }
+  public InputBuilder getInputBuilder() { return this.inputBuilder; }
 
   @Nonnull
-  public NeatRequestBuilder getNeatRequestBuilder() {
-    return new NeatRequestBuilder(this.reqBuilder);
+  public NeatInputBuilder getNeatInputBuilder() {
+    return new NeatInputBuilder(this.inputBuilder);
   }
 
   public Function build() {
 
-    final String name = this.reqBuilder.getName();
+    final String name = this.inputBuilder.getName();
 
     //@TODO How to deal with blank name?
 
     // @TODO Temporary
-    return new Function(name, this.reqBuilder.getArgs(),
+    return new Function(name, this.inputBuilder.getArgs(),
        new ArrayList<TypeReference<?>>());
 
   }

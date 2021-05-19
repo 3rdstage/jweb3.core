@@ -35,7 +35,7 @@ class FunctionBuilderTest{
   public void testFunctionSelectorWithSingleUintInputArgOnly(){
 
     final FunctionBuilder fb = new FunctionBuilder();
-    fb.getRequestBuilder()
+    fb.getInputBuilder()
       .setName("foo")
       .addUintArg(256, BigInteger.valueOf(RandomUtils.nextLong()));
 
@@ -44,10 +44,10 @@ class FunctionBuilderTest{
   }
 
   @Test
-  void testFunctionSelectorWithTwoUintArrayArgs() {
+  public void testFunctionSelectorWithTwoUintArrayArgs() {
 
     final FunctionBuilder fb = new FunctionBuilder();
-    fb.getRequestBuilder()
+    fb.getInputBuilder()
       .setName("foo")
       .addUintArrayArg(8, RandomGenerator.uintArray(8, 2))
       .addUintArrayArg(256, RandomGenerator.uintArray(256, 3));
@@ -56,7 +56,7 @@ class FunctionBuilderTest{
     this.verifyFunctionSelector(fb.build(), "foo(uint8[],uint256[])");
 
     final FunctionBuilder fb2 = new FunctionBuilder();
-    fb2.getRequestBuilder()
+    fb2.getInputBuilder()
       .setName("bar")
       .addUintArrayArg(256, RandomGenerator.uintArray(256, 2))
       .addUintArrayArg(256, RandomGenerator.uintArray(256, 5));
@@ -66,10 +66,10 @@ class FunctionBuilderTest{
   }
 
   @Test
-  void testFunctionSelectorWithIntArrayArgs() {
+  public void testFunctionSelectorWithIntArrayArgs() {
 
     final FunctionBuilder fb = new FunctionBuilder();
-    fb.getRequestBuilder()
+    fb.getInputBuilder()
       .setName("foo")
       .addIntArrayArg(8, RandomGenerator.intArray(8, 3))
       .addIntArrayArg(128, RandomGenerator.intArray(128, 5));
@@ -77,7 +77,7 @@ class FunctionBuilderTest{
     this.verifyFunctionSelector(fb.build(), "foo(int8[],int128[])");
 
     final FunctionBuilder fb2 = new FunctionBuilder();
-    fb2.getRequestBuilder()
+    fb2.getInputBuilder()
       .setName("bar")
       .addIntArrayArg(256, RandomGenerator.intArray(256, 3))
       .addIntArrayArg(256, RandomGenerator.intArray(256, 5))
@@ -85,5 +85,31 @@ class FunctionBuilderTest{
 
     this.verifyFunctionSelector(fb2.build(), "bar(int256[],int256[],int128[])");
   }
+
+  @Test
+  public void testFunctionSelectorWithAddressArrayArgs() {
+
+    final FunctionBuilder fb = new FunctionBuilder();
+    fb.getInputBuilder()
+      .setName("foo")
+      .addAddressArrayArg(RandomGenerator.addressArray(3))
+      .addAddressArrayArg(RandomGenerator.addressArray(5));
+
+    this.verifyFunctionSelector(fb.build(), "foo(address[],address[])");
+  }
+
+  @Test
+  public void testFunctionSelectorWithStaticBytesArgs() {
+
+    final FunctionBuilder fb = new FunctionBuilder();
+    fb.getInputBuilder().setName("bar")
+      .addStaticBytesArg(2, RandomUtils.nextBytes(2))
+      .addStaticBytesArg(12, RandomUtils.nextBytes(12))
+      .addStaticBytesArg(26, RandomUtils.nextBytes(26))
+      .addStaticBytesArg(32, RandomUtils.nextBytes(32));
+
+    this.verifyFunctionSelector(fb.build(), "bar(bytes2,bytes12,bytes26,bytes32)");
+  }
+
 
 }
