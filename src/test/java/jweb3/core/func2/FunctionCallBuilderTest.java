@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Hash;
+import jweb3.core.func2.SampleStructs.BookStruct;
 import jweb3.core.func2.SampleStructs.DimensionsStruct;
 import jweb3.core.func2.SampleStructs.PositionStruct;
 import jweb3.util.RandomGenerator;
@@ -229,11 +230,11 @@ class FunctionCallBuilderTest{
 
   @Test
   @DisplayName("Test function selector for `struct` type arguement(s) including only static type fields")
-  public void testFunctionSelectorWithStaticStructArgs() {
+  public void testFunctionSelectorWithStaticStructArgs() throws Exception{
 
     final FunctionCallBuilder bldr =
         new FunctionCallBuilder().setName("foo")
-        .addStructArg(new PositionStruct(100, -100));
+        .addStructArg(SampleStructs.random(PositionStruct.class));
 
     // web3.eth.abi.encodeFunctionSignature('foo((int256,int256))') == '0x6a39f104'
     this.verifyFunctionSelector(bldr.build(), "foo((int256,int256))");
@@ -248,5 +249,21 @@ class FunctionCallBuilderTest{
 
   }
 
+  @Test
+  @DisplayName("Test function selector for `struct` type arguement(s) including both static and dynamic type fields")
+  public void testFunctionSelectorWithDynamicStructArgs() {
+
+    final FunctionCallBuilder bldr =
+        new FunctionCallBuilder().setName("foo")
+        .addStructArg(new BookStruct("Alice's Adventures in Wonderland", "Lewis Carroll", 1865));
+
+
+    // web3.eth.abi.encodeFunctionSignature('foo((string,string,int32))') == '0x5b2ae0ab'
+    this.verifyFunctionSelector(bldr.build(), "foo((string,string,int32))");
+
+    this.logger.info(PositionStruct.class.getSimpleName() + PositionStruct.class.getTypeName());
+
+
+  }
 
 }
