@@ -66,25 +66,34 @@ public class SampleStructs{
     T val = null;
     switch(clazz.getSimpleName()) {
 
-    case "PositionStruct":
-      final long x = RandomUtils.nextLong() * (RandomUtils.nextBoolean() ? 1L : -1L);
-      final long y = RandomUtils.nextLong() * (RandomUtils.nextBoolean() ? 1L : -1L);
+      case "PositionStruct": {
+        final long x = RandomUtils.nextLong() * (RandomUtils.nextBoolean() ? 1L : -1L);
+        final long y = RandomUtils.nextLong() * (RandomUtils.nextBoolean() ? 1L : -1L);
 
-      val = clazz.getConstructor(long.class, long.class).newInstance(x, y);
-      break;
+        val = clazz.getConstructor(long.class, long.class).newInstance(x, y);
+        break;
+      }
+      case "DimensionsStruct": {
 
+        final long x = RandomUtils.nextLong() + 1;
+        final long y = RandomUtils.nextLong() + 1;
+        final long z = RandomUtils.nextLong() + 1;
 
-    case "BookStruct":
-      final String ttl = RandomStringUtils.randomAlphabetic(20);
-      final String auth = RandomStringUtils.randomAlphabetic(30);
-      final int yr = RandomUtils.nextInt(1000, 2021);
+        val = clazz.getConstructor(long.class, long.class, long.class)
+            .newInstance(x, y, z);
+        break;
+      }
+      case "BookStruct":
+        final String ttl = RandomStringUtils.randomAlphabetic(20);
+        final String auth = RandomStringUtils.randomAlphabetic(30);
+        final int yr = RandomUtils.nextInt(1000, 2021);
 
-      val = clazz.getConstructor(String.class, String.class, int.class)
-          .newInstance(ttl, auth, yr);
-      break;
+        val = clazz.getConstructor(String.class, String.class, int.class)
+            .newInstance(ttl, auth, yr);
+        break;
 
-    default:
-      throw new IllegalArgumentException("Unsupported type : " + clazz.getTypeName());
+      default:
+        throw new IllegalArgumentException("Unsupported type : " + clazz.getTypeName());
     }
 
     return val;

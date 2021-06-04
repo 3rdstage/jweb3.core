@@ -14,8 +14,6 @@ public class OutputSignatureBuilder{
 
   private final List<TypeReference<?>> params = new ArrayList<>();
 
-
-
   public void appendParam(@Nonnull @NotBlank final String solidityType) {
 
     try {
@@ -29,7 +27,7 @@ public class OutputSignatureBuilder{
 
   public OutputSignatureBuilder addUintParam(@Min(8) @Max(256) final int n) {
 
-    this.appendParam("uint" + n + "[]");
+    this.appendParam("uint" + n);
     return this;
   }
 

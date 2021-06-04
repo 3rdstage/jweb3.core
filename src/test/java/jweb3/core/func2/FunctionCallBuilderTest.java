@@ -19,7 +19,6 @@ class FunctionCallBuilderTest{
 
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
   private void verifyFunctionSelector(@Nonnull final FunctionCall fnct, @NotBlank final String sig) {
 
     final String encoded = fnct.getEncoded();
@@ -242,11 +241,20 @@ class FunctionCallBuilderTest{
 
     final FunctionCallBuilder bldr2 =
         new FunctionCallBuilder().setName("bar")
-        .addStructArg(new DimensionsStruct(RandomUtils.nextLong(), RandomUtils.nextLong(), RandomUtils.nextLong()));
+        .addStructArg(SampleStructs.random(DimensionsStruct.class));
 
     // web3.eth.abi.encodeFunctionSignature('bar((uint256,uint256,uint256))') == '0x44aed92e'
     this.verifyFunctionSelector(bldr2.build(), "bar((uint256,uint256,uint256))");
 
+    final FunctionCallBuilder bldr3 =
+        new FunctionCallBuilder().setName("baz")
+        .addStructArg(SampleStructs.random(PositionStruct.class))
+        .addStructArg(SampleStructs.random(PositionStruct.class))
+        .addStructArg(SampleStructs.random(PositionStruct.class));
+
+    // web3.eth.abi.encodeFunctionSignature('baz((int256,int256),(int256,int256),(int256,int256))') == '0x90ad7031'
+    final String sig3 = "baz((int256,int256),(int256,int256),(int256,int256))";
+    this.verifyFunctionSelector(bldr3.build(), sig3);
   }
 
   @Test
@@ -260,9 +268,6 @@ class FunctionCallBuilderTest{
 
     // web3.eth.abi.encodeFunctionSignature('foo((string,string,int32))') == '0x5b2ae0ab'
     this.verifyFunctionSelector(bldr.build(), "foo((string,string,int32))");
-
-    this.logger.info(PositionStruct.class.getSimpleName() + PositionStruct.class.getTypeName());
-
 
   }
 

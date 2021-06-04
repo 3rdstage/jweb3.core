@@ -1,5 +1,10 @@
 package jweb3.core;
 
+import org.apache.commons.lang3.reflect.TypeUtils;
+import org.web3j.abi.TypeReference;
+import org.web3j.abi.datatypes.DynamicArray;
+import org.web3j.abi.datatypes.Type;
+
 /**
  * @author Sangmoon Oh
  * @since 2021-05-12
@@ -28,6 +33,15 @@ public interface AbiAware{
     if(str == null || !str.startsWith("0x")) {
       throw new IllegalArgumentException("The string is not in Ethereum address format.");
     }
+  }
+
+  default <T extends Type> TypeReference<DynamicArray<T>> createDynamicArrayReference(Class<T> elmntType){
+
+    return new TypeReference<DynamicArray<T>>() {
+      public java.lang.reflect.Type getType(){
+        return TypeUtils.parameterize(DynamicArray.class, elmntType);
+      }
+    };
   }
 
 }
