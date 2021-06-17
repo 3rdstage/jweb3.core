@@ -1,4 +1,4 @@
-package jweb3.core.func2;
+package jweb3.base.func;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;

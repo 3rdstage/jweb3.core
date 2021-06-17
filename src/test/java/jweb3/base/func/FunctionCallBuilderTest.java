@@ -1,4 +1,4 @@
-package jweb3.core.func2;
+package jweb3.base.func;
 
 import java.math.BigInteger;
 import javax.annotation.Nonnull;
@@ -10,9 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Hash;
-import jweb3.core.func2.SampleStructs.BookStruct;
-import jweb3.core.func2.SampleStructs.DimensionsStruct;
-import jweb3.core.func2.SampleStructs.PositionStruct;
+import jweb3.base.func.FunctionCall;
+import jweb3.base.func.FunctionCallBuilder;
+import jweb3.base.func.SampleStructs.BookStruct;
+import jweb3.base.func.SampleStructs.DimensionsStruct;
+import jweb3.base.func.SampleStructs.PositionStruct;
 import jweb3.util.RandomGenerator;
 
 class FunctionCallBuilderTest{

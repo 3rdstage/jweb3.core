@@ -1,4 +1,4 @@
-package jweb3.core.func2;
+package jweb3.base.func;
 
 import javax.validation.constraints.NotBlank;
 import org.junit.jupiter.api.Assertions;
@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jweb3.base.func.FunctionCallBuilder;
 
 public class FunctionCallBuilderTest2{
 

@@ -1,4 +1,4 @@
-package jweb3.core.func2;
+package jweb3.base.func;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.NotThreadSafe;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -28,11 +29,12 @@ import org.web3j.abi.datatypes.StructType;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Uint;
 import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Int256;
 import org.web3j.abi.datatypes.generated.Uint256;
-import jweb3.core.AbiAware;
+import jweb3.base.AbiAware;
 
+@NotThreadSafe
 public class FunctionCallBuilder implements AbiAware{
-
 
   // cache for 'Class' instances for Solidity ABI types
   protected final static Map<String, Class<? extends Type<?>>> classes = new HashMap<>();
@@ -99,6 +101,42 @@ public class FunctionCallBuilder implements AbiAware{
 
   }
 
+  /*
+   * - uint(int, BigInteger)
+   * - uint(int, long)
+   * - uint(BigInteger)
+   * - uint(long)
+   * - uintArray(int, BigInteger[])
+   * - uintArray(int, long[])
+   * - uintArray(BigInteger[])
+   * - uintArray(long[])
+   * - int(int, BigInteger)
+   * - int(int, long)
+   * - int(BigInteger)
+   * - int(long)
+   * - intArray(int, BigInteger[])
+   * - intArray(int, long[])
+   * - intArray(BigInteger[])
+   * - intArray(long[])
+   * - address(String)
+   * - addressArray(String[])
+   * - bool(boolean)
+   * - boolArray(boolean[])
+   * - staticBytes(int, byte[])
+   * - staticBytesArray(int, byte[][])
+   * - bytes(byte[])
+   * - bytes(String)
+   * - bytes(String, Charset)
+   * - bytesArray(byte[][])
+   * - bytesArray(String[])
+   * - bytesArray(Charset, String[])
+   * - string(String)
+   * - stringArray(String[])
+   * - struct(StructType)
+   * - structArray(StructType[])
+   */
+
+
   public FunctionCallBuilder addUintArg(@Min(8) @Max(256) final int bitSize,
       @Nonnull @PositiveOrZero final BigInteger value) {
 
@@ -154,31 +192,26 @@ public class FunctionCallBuilder implements AbiAware{
     return this;
   }
 
-
   public FunctionCallBuilder addUintArrayArg(@Nonnull @NotEmpty final BigInteger ... value) {
 
     Validate.isTrue(value != null && value.length > 0, "Empty array is unacceptable.");
     final List<Uint256> val = new ArrayList<>();
-    for(int i = 0; i < value.length; i++) {
-      val.add(new Uint256(value[i]));
-    }
+    for(int i = 0; i < value.length; i++) val.add(new Uint256(value[i]));
 
     this.args.add(new DynamicArray<Uint256>(Uint256.class, val));
     return this;
   }
-
 
   public FunctionCallBuilder addUintArrayArg(@Nonnull @NotEmpty final long ... value) {
 
     Validate.isTrue(value != null && value.length > 0, "Empty array is unacceptable.");
     final List<Uint256> val = new ArrayList<>();
-    for(int i = 0; i < value.length; i++) {
-      val.add(new Uint256(value[i]));
-    }
+    for(int i = 0; i < value.length; i++) val.add(new Uint256(value[i]));
 
     this.args.add(new DynamicArray<Uint256>(Uint256.class, val));
     return this;
   }
+
 
   public FunctionCallBuilder addIntArg(@Min(8) @Max(256) final int bitSize,
       @Nonnull @PositiveOrZero final BigInteger value) {
@@ -215,6 +248,43 @@ public class FunctionCallBuilder implements AbiAware{
     return this;
   }
 
+  public FunctionCallBuilder addIntArrayArg(@Min(8) @Max(256) final int bitSize,
+      @Nonnull @NotEmpty final long ... value) {
+
+    this.validateIntBitSize(bitSize);
+    Validate.isTrue(value != null && value.length > 0, "Empty array is unacceptable.");
+
+    final BigInteger[] val = new BigInteger[value.length];
+    for(int i = 0, n = value.length; i < n; i++) {
+      val[i] = BigInteger.valueOf(value[i]);
+      Validate.isTrue(BigInteger.ZERO.compareTo(val[i]) <= 0, "Elements of value should be non-negative.");
+    }
+
+    Class<? extends Int> clazz = classes.get("int" + bitSize).asSubclass(Int.class);
+    this.appendArrayArg(clazz, BigInteger.class, val);
+    return this;
+  }
+
+  public FunctionCallBuilder addIntArrayArg(@Nonnull @NotEmpty final BigInteger ... value) {
+
+    Validate.isTrue(value != null && value.length > 0, "Empty array is unacceptable.");
+    final List<Int256> val = new ArrayList<>();
+    for(int i = 0; i < value.length; i++) val.add(new Int256(value[i]));
+
+    this.args.add(new DynamicArray<Int256>(Int256.class, val));
+    return this;
+  }
+
+  public FunctionCallBuilder addIntArrayArg(@Nonnull @NotEmpty final long ... value) {
+
+    Validate.isTrue(value != null && value.length > 0, "Empty array is unacceptable.");
+    final List<Int256> val = new ArrayList<>();
+    for(int i = 0; i < value.length; i++) val.add(new Int256(value[i]));
+
+    this.args.add(new DynamicArray<Int256>(Int256.class, val));
+    return this;
+  }
+
 
   public FunctionCallBuilder addAddressArg(
       @NotBlank @Pattern(regexp = "0x[0-9a-fA-F]{1,40}") final String value) {
@@ -229,15 +299,11 @@ public class FunctionCallBuilder implements AbiAware{
 
     Validate.isTrue(value != null && value.length > 0, "Empty array is unacceptable.");
     final List<Address> val = new ArrayList<>();
-    for(int i = 0; i < value.length; i++) {
-      val.add(new Address(value[i]));
-    }
+    for(int i = 0; i < value.length; i++) val.add(new Address(value[i]));
 
     this.args.add(new DynamicArray<Address>(Address.class, val));
     return this;
   }
-
-
 
   public FunctionCallBuilder addBoolArg(final boolean value) {
     this.args.add(new Bool(value));
@@ -249,9 +315,7 @@ public class FunctionCallBuilder implements AbiAware{
 
     Validate.isTrue(value != null && value.length > 0, "Empty array is unacceptable.");
     final List<Bool> val = new ArrayList<>();
-    for(int i = 0; i < value.length; i++) {
-      val.add(new Bool(value[i]));
-    }
+    for(int i = 0; i < value.length; i++) val.add(new Bool(value[i]));
 
     this.args.add(new DynamicArray<Bool>(Bool.class, val));
     return this;
@@ -280,18 +344,42 @@ public class FunctionCallBuilder implements AbiAware{
   }
 
 
+  /**
+   * Append a {@code bytes} ABI type argument
+   *
+   * @param value
+   * @return
+   *
+   * @see #addBytesArg(String)
+   * @see #addBytesArg(String, Charset)
+   */
   public FunctionCallBuilder addBytesArg(final byte[] value) {
 
     this.args.add(new DynamicBytes(value));
     return this;
   }
 
+  /**
+   * Append a {@code bytes} ABI type argument.
+   * <p>
+   * Specified string would be turn to byte array on behalf of {@code UTF-8} encoding.
+   *
+   * @param value
+   * @return
+   *
+   * @see #addBytesArg(byte[])
+   * @see #addBytesArg(String, Charset)
+   */
   public FunctionCallBuilder addBytesArg(final String value) {
 
     return this.addBytesArg(value, StandardCharsets.UTF_8);
   }
 
   /**
+   * Append a {@code bytes} ABI type argument.
+   * <p>
+   * Specified string would be turn to byte array on behalf of the specified character set
+   *
    * @param value
    * @param charset
    * @return
@@ -313,8 +401,26 @@ public class FunctionCallBuilder implements AbiAware{
 
     Validate.isTrue(value != null && value.length > 0, "Empty array is unacceptable.");
     final List<DynamicBytes> val = new ArrayList<>();
+    for(int i = 0; i < value.length; i++) val.add(new DynamicBytes(value[i]));
+
+    this.args.add(new DynamicArray<DynamicBytes>(DynamicBytes.class, val));
+    return this;
+  }
+
+  public FunctionCallBuilder addBytesArrayArg(@NotEmpty final String ... value) {
+    return this.addBytesArrayArg(StandardCharsets.UTF_8, value);
+  }
+
+  public FunctionCallBuilder addBytesArrayArg(@Nonnull final Charset charset,
+      @NotEmpty final String ... value) {
+
+    Validate.isTrue(charset != null, "Character set should be specified.");
+    Validate.isTrue(value != null && value.length > 0, "Empty array is unacceptable.");
+
+    final List<DynamicBytes> val = new ArrayList<>();
     for(int i = 0; i < value.length; i++) {
-      val.add(new DynamicBytes(value[i]));
+      val.add(new DynamicBytes(
+          (value[i] != null) ? value[i].getBytes(StandardCharsets.UTF_8) : null));
     }
 
     this.args.add(new DynamicArray<DynamicBytes>(DynamicBytes.class, val));
@@ -328,14 +434,11 @@ public class FunctionCallBuilder implements AbiAware{
     return this;
   }
 
-
   public FunctionCallBuilder addStringArrayArg(@NotEmpty final String ...value) {
 
     Validate.isTrue(value != null && value.length > 0, "Empty array is unacceptable.");
     final List<Utf8String> val = new ArrayList<>();
-    for(int i = 0; i < value.length; i++) {
-      val.add(new Utf8String(value[i]));
-    }
+    for(int i = 0; i < value.length; i++) val.add(new Utf8String(value[i]));
 
     this.args.add(new DynamicArray<Utf8String>(Utf8String.class, val));
     return this;
@@ -370,13 +473,11 @@ public class FunctionCallBuilder implements AbiAware{
 
   protected <T extends StructType & Type> void appendStructArrayArg(
       @Nonnull Class<T> clazz, @NotEmpty final T ...value) {
-
     Validate.isTrue(value != null && value.length > 0, "Empty array is unacceptable.");
 
     final List<T> val = new ArrayList<>();
-    for(int i = 0; i < value.length; i++) {
-      val.add((value[i]));
-    }
+    for(int i = 0; i < value.length; i++) val.add((value[i]));
+
     this.args.add(new DynamicArray<T>(clazz , val));
   }
 

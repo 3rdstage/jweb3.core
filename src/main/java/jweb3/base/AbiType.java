@@ -1,4 +1,4 @@
-package jweb3.core;
+package jweb3.base;
 
 public enum AbiType{
 

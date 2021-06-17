@@ -1,4 +1,4 @@
-package jweb3.core;
+package jweb3.base;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.web3j.abi.TypeReference;
