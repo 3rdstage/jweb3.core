@@ -13,3 +13,8 @@
 > The JSON description of the ABI however contains both inputs and outputs.
 
 
+### Signing Workflow
+
+* [`org.web3j.crypto.TransactionEncoder.encode(RawTransaction tx, SignatureData.sign)`](https://github.com/web3j/web3j/blob/v4.8.8/crypto/src/main/java/org/web3j/crypto/TransactionEncoder.java#L90)
+* [`org.web3j.crypto.TransactionEncoder.asRlpValues(RawTransaction tx, SignatureData.sign)`](https://github.com/web3j/web3j/blob/v4.8.8/crypto/src/main/java/org/web3j/crypto/TransactionEncoder.java#L113)
+

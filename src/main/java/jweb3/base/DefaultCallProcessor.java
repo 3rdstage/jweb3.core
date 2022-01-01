@@ -23,12 +23,12 @@ public class DefaultCallProcessor implements CallProcessor{
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  private Web3j web3j;
+  private Web3j web3;
 
-  public DefaultCallProcessor(@Nonnull Web3j web3j) {
+  public DefaultCallProcessor(@Nonnull final Web3j web3) {
 
-    Validate.isTrue(web3j != null, "Web3j client should be provided.");
-    this.web3j = web3j;
+    Validate.isTrue(web3 != null, "Web3j client should be provided.");
+    this.web3 = web3;
   }
 
 
@@ -48,7 +48,7 @@ public class DefaultCallProcessor implements CallProcessor{
         senderAddress, contractAddress, funcCall.getEncoded());
 
     try {
-      EthCall resp = this.web3j.ethCall(call, DefaultBlockParameterName.LATEST).sendAsync().get();
+      EthCall resp = this.web3.ethCall(call, DefaultBlockParameterName.LATEST).sendAsync().get();
       List<Type> output = FunctionReturnDecoder.decode(resp.getResult(), outputSignature.getParams());
 
       return new Output(output);

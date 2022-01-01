@@ -7,7 +7,6 @@ import org.web3j.protocol.Web3j;
 
 class DefaultCallProcessorTest{
 
-
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private Web3j web3j = new TestEthClientProvider().localClient();

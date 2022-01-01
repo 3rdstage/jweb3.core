@@ -121,6 +121,11 @@
       <appender-ref ref="DRFA" />
    </logger>
    
+   <logger name="org.web3j.protocol" level="DEBUG" additivity="false">
+      <appender-ref ref="Console" />
+      <appender-ref ref="DRFA" />
+   </logger>
+   
    <!-- https://mongodb.github.io/mongo-java-driver/4.2/driver/reference/logging/ -->
    <logger name="org.mongodb.driver" level="${_LOG_LEVEL_MONGODB}" additivity="false">
       <appender-ref ref="Console" />
