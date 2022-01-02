@@ -73,7 +73,15 @@ public class DefaultDeployProcessor extends TransactionSerializer implements Dep
       final BigInteger nonce = web3.ethGetTransactionCount(
           senderAddress, DefaultBlockParameterName.LATEST).send().getTransactionCount();
 
-      final byte[] serializedTx = this.serialize(nonce, gasPrice, gasLimit, null, BigInteger.ZERO, byteCode, chainId);
+      // serialized tx = RLP(tx)
+      // msg = Keccak(serialized tx) = Keccak(RLP(tx))
+      // signatre = Sign(msg) = Sign(Keccak(RLP(tx)))
+      // signed tx = tx + signature = tx + Sign(Keccak(RLP(tx)))
+      // serialized signed tx = RLP(signed tx) = RLP(tx + Sign(Keccak(RLP(tx))))
+
+      //final byte[] serializedTx = this.serialize(nonce, gasPrice, gasLimit, null, BigInteger.ZERO, byteCode, chainId);
+      //final byte[] msg = Hash.sha3(serializedTx);
+      //final Signature signature = this.signer.sign(msg, senderAddress);
 
 
       final Transaction tx = Transaction.createContractTransaction(

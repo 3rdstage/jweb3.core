@@ -1,4 +1,4 @@
-package jweb3.base;
+package jweb3.base.tx;
 
 import java.math.BigInteger;
 import org.apache.commons.codec.binary.Hex;
@@ -8,11 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class TransactionSerializerTest{
+class LegacyTransactionSerializerTest{
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  private TransactionSerializer testee = new TransactionSerializer();
+  private LegacyTransactionSerializer testee = new LegacyTransactionSerializer();
+
 
   @Test
   @DisplayName("Test transaction serialization exampled in EIP-155 documentation")
@@ -28,14 +29,13 @@ class TransactionSerializerTest{
     final BigInteger value = BigInteger.TEN.pow(18);
     final String data = "";
     final long chainId = 1;
+    final LegacyTransaction tx = new LegacyTransaction(nonce, gasPrice, gasLimit, to, value, data, chainId);
     final String expected = "0xec098504a817c800825208943535353535353535353535353535353535353535880de0b6b3a764000080018080";
 
-    final byte[] serialized = testee.serialize(nonce, gasPrice, gasLimit,
-        to, value, data, chainId);
+    final byte[] serialized = testee.serialize(tx);
 
     this.logger.info(Hex.encodeHexString(serialized));
     Assertions.assertEquals(expected.substring(2), Hex.encodeHexString(serialized));
-
   }
 
 }
