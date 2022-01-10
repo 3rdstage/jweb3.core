@@ -48,13 +48,13 @@
     <commons-validator.version>1.6</commons-validator.version> <!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
     <commons-collections4.version>4.4</commons-collections4.version> <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
     <commons-codec.version>1.15</commons-codec.version> <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec/1.15 -->
+    <org.json.version>20211205</org.json.version> <!-- https://mvnrepository.com/artifact/org.json/json -->
     <typesafe-config.version>1.3.1</typesafe-config.version>
     <mybatis.version>3.5.1</mybatis.version> <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
     <jjwt.version>0.10.7</jjwt.version> <!-- https://mvnrepository.com/artifact/io.jsonwebtoken -->
     <web3j.version>4.6.4</web3j.version> <!-- https://mvnrepository.com/artifact/org.web3j -->
     <okhttp.version>4.3.1</okhttp.version>
     <bouncycastle.version>1.69</bouncycastle.version> <!-- https://mvnrepository.com/artifact/org.bouncycastle -->
-    
     <!-- version for Maven plugins -->
     <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-enforcer-plugin -->
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
@@ -512,7 +512,13 @@
       <artifactId>commons-codec</artifactId>
       <version>${commons-codec.version}</version>
     </dependency>
-    <!-- For more typesafe config, refer https://github.com/typesafehub/config -->
+    <!-- Fore more on JSON-java (org.json), refer https://github.com/stleary/JSON-java  -->
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>${org.json.version}</version>
+    </dependency>
+    <!-- For more on typesafe config, refer https://github.com/typesafehub/config -->
     <dependency>
       <groupId>com.typesafe</groupId>
       <artifactId>config</artifactId>

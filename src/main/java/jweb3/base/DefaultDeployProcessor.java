@@ -19,7 +19,7 @@ import org.web3j.tx.response.PollingTransactionReceiptProcessor;
 import org.web3j.tx.response.TransactionReceiptProcessor;
 
 @ThreadSafe
-public class DefaultDeployProcessor extends TransactionSerializer implements DeployProcessor{
+public class DefaultDeployProcessor implements DeployProcessor{
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
