@@ -6,8 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import org.apache.commons.lang3.StringUtils;
@@ -16,19 +16,27 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.signers.HMacDSAKCalculator;
+import org.bouncycastle.util.Arrays;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jweb3.util.KeyUtils;
 
+/**
+ * @author Sangmoon Oh
+ * @since 0.8
+ */
 public class TestOnlyECDSASigner implements ECDSASigner{
 
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  private Map<@Pattern(regexp = "0x[0-9A-Fa-f]{1,40}") String, @Positive BigInteger> keys = new HashMap<>(); // map from address to private key;
+  private Map<@Pattern(regexp = "0x[0-9A-Fa-f]{40}") String, @Positive BigInteger> keys = new HashMap<>(); // map from address to private key;
 
   @Override
-  public Pair<BigInteger, BigInteger> sign(final byte[] message,
-      @Pattern(regexp = "0x[0-9A-Fa-f]{1,40}") @Nonnull final String signerAddr){
+  public Pair<BigInteger, BigInteger> sign(final byte @NotNull @NotEmpty [] message,
+      @Pattern(regexp = "0x[0-9A-Fa-f]{40}") @NotNull final String signerAddr){
+
+    // TODO What if `message` is null or empty ?
 
     final BigInteger prvKey = this.keys.get(signerAddr);
     Validate.validState(prvKey != null, String.format("Can't find privake key for the specified address '%s'.", signerAddr));
@@ -47,7 +55,7 @@ public class TestOnlyECDSASigner implements ECDSASigner{
    *              Address and private key are expected to be in '0x' prefixed hexadecimal values.
    */
   public TestOnlyECDSASigner(
-      @NotEmpty Pair<@Pattern(regexp = "0x[0-9A-Fa-f]{1,40}") String, @Pattern(regexp = "0x[0-9A-Fa-f]{1,64}") String>[] pairs) {
+      Pair<@Pattern(regexp = "0x[0-9A-Fa-f]{40}") @NotNull String, @Pattern(regexp = "0x[0-9A-Fa-f]{1,64}") @NotNull String> @NotEmpty [] pairs) {
 
     Validate.isTrue(pairs != null && pairs.length > 0, "At least one pair should be provided.");
 
@@ -65,10 +73,17 @@ public class TestOnlyECDSASigner implements ECDSASigner{
     }
   }
 
-  public TestOnlyECDSASigner(@NotEmpty @Pattern(regexp = "0x[0-9A-Fa-f]{1,64}") String[] privateKeys) {
+  public TestOnlyECDSASigner(@Pattern(regexp = "0x[0-9A-Fa-f]{1,64}") @NotNull String @NotEmpty [] privateKeys) {
 
-    // TODO
+    Validate.isTrue(!Arrays.isNullOrEmpty(privateKeys), "At least one private key should be provided.");
 
+    String addr = null;
+    for(String key: privateKeys) {
+      addr = KeyUtils.getChecksumAddressFromPrivateKey(key);
+      this.keys.put(addr, new BigInteger(StringUtils.removeStart(key, "0x"), 16));
+
+      this.logger.debug("A key is added. - address: {}, private key: {}", addr, keys.get(addr));
+    }
   }
 
 
@@ -78,7 +93,7 @@ public class TestOnlyECDSASigner implements ECDSASigner{
    *
    * @see #TestOnlyECDSASigner(File)
    */
-  public TestOnlyECDSASigner(@Nonnull final Path jsonFile) throws Exception{
+  public TestOnlyECDSASigner(@NotNull final Path jsonFile) throws Exception{
 
     Validate.isTrue(jsonFile != null, "No input file is specified.");
 
@@ -104,7 +119,7 @@ public class TestOnlyECDSASigner implements ECDSASigner{
    *
    * @see #TestOnlyECDSASigner(Path)
    */
-  public TestOnlyECDSASigner(@Nonnull final File jsonFile) throws Exception{
+  public TestOnlyECDSASigner(@NotNull final File jsonFile) throws Exception{
     this(jsonFile != null ? jsonFile.toPath() : null);
 
   }

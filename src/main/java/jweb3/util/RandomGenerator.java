@@ -3,14 +3,18 @@ package jweb3.util;
 import java.math.BigInteger;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import javax.annotation.Nonnull;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 
+/**
+ * @author Sangmoon Oh
+ * @since 0.8
+ */
 public class RandomGenerator{
 
   private static char[] hexChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -28,7 +32,7 @@ public class RandomGenerator{
     }
   }
 
-  @Nonnull
+  @NotNull
   public static BigInteger uintVal(@Min(8) @Max(256) int bitSize) {
 
     validateIntBitSize(bitSize);
@@ -60,7 +64,7 @@ public class RandomGenerator{
     return uintArray(256, arrSize);
   }
 
-  @Nonnull
+  @NotNull
   public static BigInteger intVal(@Min(8) @Max(256) int bitSize) {
 
     validateIntBitSize(bitSize);
@@ -96,7 +100,7 @@ public class RandomGenerator{
     return intArray(256, arrSize);
   }
 
-  @Nonnull @NotBlank
+  @NotBlank
   public static String address() {
     return "0x" + RandomStringUtils.random(40, hexChars);
   }

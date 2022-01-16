@@ -27,9 +27,8 @@ class LegacyTransactionSerializerTest{
     final BigInteger gasLimit = BigInteger.valueOf(21000);
     final String to = "0x3535353535353535353535353535353535353535";
     final BigInteger value = BigInteger.TEN.pow(18);
-    final String data = "";
     final long chainId = 1;
-    final LegacyTransaction tx = new LegacyTransaction(nonce, gasPrice, gasLimit, to, value, data, chainId);
+    final LegacyTransaction tx = new LegacyTransaction(nonce, gasPrice, gasLimit, to, value, chainId);
     final String expected = "0xec098504a817c800825208943535353535353535353535353535353535353535880de0b6b3a764000080018080";
 
     final byte[] serialized = testee.serialize(tx);

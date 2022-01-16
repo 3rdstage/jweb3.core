@@ -14,6 +14,29 @@ public class NumericTest{
 
 
   @Test
+  public void testToHexStringWithApacheCodecLib() throws Exception{
+
+    final byte[][] inputs = {
+        "Highway Star".getBytes(),
+        "Crazy Train".getBytes(),
+        "The Dark Side of the Moon".getBytes(),
+        "지상에서 영원으로".getBytes()
+    };
+
+    String str1 = null;
+    String str2 = null;
+    for(byte[] input: inputs) {
+      str1 = Numeric.toHexString(input);
+      str2 = Hex.encodeHexString(input);
+
+      Assertions.assertEquals(str1.substring(2), str2);
+      this.logger.info("Numeric encoded: {}", str1);
+      this.logger.info("Hex encoded    :   {}", str2);
+    }
+  }
+
+
+  @Test
   public void testHexStringToByteArrayWithApacheCodecLib() throws Exception{
 
     logger.info(Charset.defaultCharset().displayName());

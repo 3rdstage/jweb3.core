@@ -1,8 +1,8 @@
 package jweb3.base.func;
 
 import java.lang.reflect.Array;
-import javax.annotation.Nonnull;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -61,7 +61,7 @@ public class SampleStructs{
   }
 
 
-  public static <T extends StructType & Type> T random(@Nonnull Class<T> clazz) throws Exception{
+  public static <T extends StructType & Type> T random(@NotNull Class<T> clazz) throws Exception{
 
     T val = null;
     switch(clazz.getSimpleName()) {
@@ -100,7 +100,7 @@ public class SampleStructs{
   }
 
   public static <T extends StructType & Type> T[] randomArray(
-      @Nonnull Class<T> clazz, @Positive int arrSize) throws Exception {
+      @NotNull Class<T> clazz, @Positive int arrSize) throws Exception {
 
     if(arrSize < 1) throw new IllegalArgumentException("Invalid array size.");
 

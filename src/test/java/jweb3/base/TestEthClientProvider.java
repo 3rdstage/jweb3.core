@@ -1,8 +1,8 @@
 package jweb3.base;
 
 import java.math.BigInteger;
-import javax.annotation.Nonnull;
 import javax.annotation.WillNotClose;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -50,7 +50,7 @@ public class TestEthClientProvider{
   }
 
 
-  protected String getNetVersion(@Nonnull @WillNotClose final Web3j web3j) {
+  protected String getNetVersion(@NotNull @WillNotClose final Web3j web3j) {
 
     if(web3j == null) throw new IllegalArgumentException("The Ethereum session is 'null' which is never expected.");
 

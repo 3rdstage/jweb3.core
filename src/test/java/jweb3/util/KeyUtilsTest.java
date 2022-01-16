@@ -1,8 +1,10 @@
 package jweb3.util;
 
+import java.io.File;
 import java.math.BigInteger;
+import java.nio.file.Files;
 import org.apache.commons.lang3.RandomUtils;
-import org.json.JSONObject;
+import org.json.JSONArray;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -15,12 +17,8 @@ class KeyUtilsTest{
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-  private JSONObject sampleKeyPairs;
-
   @BeforeAll
-  void beforeAll() {
-
-
+  void beforeAll() throws Exception{
 
   }
 
@@ -57,30 +55,116 @@ class KeyUtilsTest{
 
   }
 
-
-
   @Test
   @DisplayName("`getPublicKeyAsStringWithNull` would return null with null input")
   void testGetPublicKeyAsStringWithNull(){
 
-    String str = KeyUtils.getPublicKeyAsString(null, true);
-
+    String str = KeyUtils.getPublicKeyAsString(null, true, true);
     Assertions.assertNull(str);
 
-    str = KeyUtils.getPublicKeyAsString(null, false);
-
+    str = KeyUtils.getPublicKeyAsString(null, true, false);
     Assertions.assertNull(str);
+
+    str = KeyUtils.getPublicKeyAsString(null, false, true);
+    Assertions.assertNull(str);
+
+    str = KeyUtils.getPublicKeyAsString(null, false, false);
+    Assertions.assertNull(str);
+
+  }
+
+
+  @Test
+  @DisplayName("`getPublicKeyAsString()` would convert `BigInteger` type public key to hexadecimal value string.")
+  void testGetPublicKeyAsString() throws Exception{
+
+    final File jsonFile = new File(ClassLoader.getSystemResource("jweb3/base/util/sample-keypairs-1.json").toURI());
+    final String json = new String(Files.readAllBytes(jsonFile.toPath()));
+    final JSONArray keyPairs = new JSONArray(json);
+
+    String pubKey = null;
+    BigInteger pubKeyInt = null;
+    String pubKey2 = null;
+    for(int i = 0, n = keyPairs.length(); i < n; i++) {
+      pubKey = keyPairs.getJSONObject(i).getString("publicKey");
+      pubKeyInt = new BigInteger(keyPairs.getJSONObject(i).getString("publicKeyInt"), 10);
+
+      pubKey2 = KeyUtils.getPublicKeyAsString(pubKeyInt);
+      Assertions.assertEquals(pubKey, pubKey2);
+      Assertions.assertEquals(pubKey2.length(), 130);
+      Assertions.assertEquals(pubKey2.substring(0, 2), "0x");
+
+      this.logger.debug("Public Key          : {}", pubKey);
+      this.logger.debug("Public Key Converted: {}", pubKey2);
+    }
+  }
+
+
+  @Test
+  void testPublicKeyFromPrivateKey() throws Exception{
+
+    final File jsonFile = new File(ClassLoader.getSystemResource("jweb3/base/util/sample-keypairs-1.json").toURI());
+    final String json = new String(Files.readAllBytes(jsonFile.toPath()));
+    final JSONArray keyPairs = new JSONArray(json);
+
+    BigInteger prvKey = null, pubKey = null, pubKey2 = null, pubKey3;
+    String prvKeyStr = null;
+    for(int i = 0, n = keyPairs.length(); i < n; i++) {
+      prvKey = new BigInteger(keyPairs.getJSONObject(i).getString("privateKeyInt"), 10);
+      prvKeyStr = keyPairs.getJSONObject(i).getString("privateKey");
+      pubKey = new BigInteger(keyPairs.getJSONObject(i).getString("publicKeyInt"), 10);
+
+      pubKey2 = KeyUtils.getPublicKeyFromPrivateKey(prvKey);
+      Assertions.assertEquals(pubKey, pubKey2);
+
+      pubKey3 = KeyUtils.getPublicKeyFromPrivateKey(prvKeyStr);
+      Assertions.assertEquals(pubKey, pubKey3);
+
+      this.logger.debug("Public Key            : {}", pubKey);
+      this.logger.debug("Public Key Generated 1: {}", pubKey2);
+      this.logger.debug("Public Key Generated 2: {}", pubKey3);
+    }
+  }
+
+
+  @Test
+  void testGetChecksumAddressFromPrivateKey() throws Exception{
+
+    final File jsonFile = new File(ClassLoader.getSystemResource("jweb3/base/util/sample-keypairs-1.json").toURI());
+    final String json = new String(Files.readAllBytes(jsonFile.toPath()));
+    final JSONArray keyPairs = new JSONArray(json);
+
+    String prvKey = null, addr = null, addr2 = null, addr3 = null;
+    for(int i = 0, n = keyPairs.length(); i < n; i++) {
+      prvKey = keyPairs.getJSONObject(i).getString("privateKey");
+      addr = keyPairs.getJSONObject(i).getString("address");
+      addr2 = KeyUtils.getChecksumAddressFromPrivateKey(prvKey);
+
+      Assertions.assertEquals(addr, addr2);
+      this.logger.debug("Private Key      : {}", prvKey);
+      this.logger.debug("Address          : {}", addr);
+      this.logger.debug("Address Generated: {}", addr2);
+    }
   }
 
   @Test
-  void testGetPublicKeyAsString() {
+  void testGetAddressFromPrivateKey2() throws Exception{
 
-    BigInteger intKey = new BigInteger("5000000000000");
-    String strKey = KeyUtils.getPublicKeyAsString(intKey, true);
+    final File jsonFile = new File(ClassLoader.getSystemResource("jweb3/base/util/sample-keypairs-1.json").toURI());
+    final String json = new String(Files.readAllBytes(jsonFile.toPath()));
+    final JSONArray keyPairs = new JSONArray(json);
 
-    this.logger.debug("Integer: {}, String: {}", intKey, strKey);
+    BigInteger prvKey = null;
+    String addr = null, addr2 = null, addr3 = null;
+    for(int i = 0, n = keyPairs.length(); i < n; i++) {
+      prvKey = new BigInteger(keyPairs.getJSONObject(i).getString("privateKeyInt"));
+      addr = keyPairs.getJSONObject(i).getString("address");
+      addr2 = KeyUtils.getAddressFromPrivateKey2(prvKey, true, true);
 
+      Assertions.assertEquals(addr, addr2);
+      this.logger.debug("Private Key      : {}", prvKey);
+      this.logger.debug("Address          : {}", addr);
+      this.logger.debug("Address Generated: {}", addr2);
+    }
   }
-
-
 }

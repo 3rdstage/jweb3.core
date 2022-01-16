@@ -1,8 +1,8 @@
 package jweb3.base;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -25,7 +25,7 @@ public class DefaultCallProcessor implements CallProcessor{
 
   private Web3j web3;
 
-  public DefaultCallProcessor(@Nonnull final Web3j web3) {
+  public DefaultCallProcessor(@NotNull final Web3j web3) {
 
     Validate.isTrue(web3 != null, "Web3j client should be provided.");
     this.web3 = web3;
@@ -34,10 +34,10 @@ public class DefaultCallProcessor implements CallProcessor{
 
   @Override
   public Output process(
-      @Pattern(regexp = "0x[0-9A-Fa-f]{1,40}") final String senderAddress,
-      @Pattern(regexp = "0x[0-9A-Fa-f]{1,40}") final String contractAddress,
-      @Nonnull final FunctionCall funcCall,
-      @Nonnull final OutputSignature outputSignature){
+      @Pattern(regexp = "0x[0-9A-Fa-f]{40}") @NotNull final String senderAddress,
+      @Pattern(regexp = "0x[0-9A-Fa-f]{40}") @NotNull final String contractAddress,
+      @NotNull final FunctionCall funcCall,
+      @NotNull final OutputSignature outputSignature){
 
     Validate.isTrue(StringUtils.isNotBlank(senderAddress), "");
 

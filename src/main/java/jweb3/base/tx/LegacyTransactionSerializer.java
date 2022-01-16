@@ -2,8 +2,8 @@ package jweb3.base.tx;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.Validate;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
@@ -16,7 +16,7 @@ import org.web3j.utils.Numeric;
 public class LegacyTransactionSerializer implements TransactionSerializer<LegacyTransaction>{
 
   @Override
-  public byte[] serialize(@Nonnull final LegacyTransaction tx){
+  public byte[] serialize(@NotNull final LegacyTransaction tx){
     Validate.isTrue(tx != null, "No transaction instance is provided.");
 
     // TODO What if `data` is null

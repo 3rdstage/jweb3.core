@@ -2,9 +2,9 @@ package jweb3.base.func;
 
 import java.math.BigInteger;
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.ThreadSafe;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.DynamicArray;
@@ -20,7 +20,7 @@ public class Output{
   final private List<Type> values;
 
   @SuppressWarnings({"rawtypes"})
-  public Output(@Nonnull final List<Type> values) {
+  public Output(@NotNull final List<Type> values) {
     this.values = values;
   }
 

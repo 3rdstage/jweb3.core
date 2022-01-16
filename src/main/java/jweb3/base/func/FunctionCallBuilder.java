@@ -287,7 +287,7 @@ public class FunctionCallBuilder implements AbiAware{
 
 
   public FunctionCallBuilder addAddressArg(
-      @NotBlank @Pattern(regexp = "0x[0-9a-fA-F]{1,40}") final String value) {
+      @NotBlank @Pattern(regexp = "0x[0-9a-fA-F]{40}") final String value) {
 
     this.validateAddressString(value);
 

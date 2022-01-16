@@ -1,8 +1,8 @@
 package jweb3.base.func;
 
 import java.math.BigInteger;
-import javax.annotation.Nonnull;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Hash;
-import jweb3.base.func.FunctionCall;
-import jweb3.base.func.FunctionCallBuilder;
 import jweb3.base.func.SampleStructs.BookStruct;
 import jweb3.base.func.SampleStructs.DimensionsStruct;
 import jweb3.base.func.SampleStructs.PositionStruct;
@@ -21,7 +19,7 @@ class FunctionCallBuilderTest{
 
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  private void verifyFunctionSelector(@Nonnull final FunctionCall fnct, @NotBlank final String sig) {
+  private void verifyFunctionSelector(@NotNull final FunctionCall fnct, @NotBlank final String sig) {
 
     final String encoded = fnct.getEncoded();
     final String sltr = Hash.sha3String(sig).substring(0, 10);

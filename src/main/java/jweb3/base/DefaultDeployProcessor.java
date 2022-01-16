@@ -1,9 +1,9 @@
 package jweb3.base;
 
 import java.math.BigInteger;
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -43,9 +43,9 @@ public class DefaultDeployProcessor implements DeployProcessor{
     return this.defaultGasLimit;
   }
 
-  public DefaultDeployProcessor(@Nonnull final Web3j web3,
-      @PositiveOrZero final BigInteger defaultGasPrice,
-      @Positive final BigInteger defaultGasLimit) {
+  public DefaultDeployProcessor(@NotNull final Web3j web3,
+      @PositiveOrZero @NotNull final BigInteger defaultGasPrice,
+      @Positive @NotNull final BigInteger defaultGasLimit) {
 
     Validate.isTrue(web3 != null, "Web3j client should be provided.");
     this.web3 = web3;
@@ -63,11 +63,11 @@ public class DefaultDeployProcessor implements DeployProcessor{
 
 
   @Override
-  public @Pattern(regexp = "0x[0-9A-Fa-f]{1,40}") String process(
-      @Pattern(regexp = "0x[0-9A-Fa-f]{1,40}") @Nonnull final String senderAddress,
+  public @Pattern(regexp = "0x[0-9A-Fa-f]{40}") String process(
+      @Pattern(regexp = "0x[0-9A-Fa-f]{40}") @NotNull final String senderAddress,
       @NotBlank final String byteCode,
-      @PositiveOrZero final BigInteger gasPrice,
-      @Positive final BigInteger gasLimit){
+      @PositiveOrZero @NotNull final BigInteger gasPrice,
+      @Positive @NotNull final BigInteger gasLimit){
 
     try {
       final BigInteger nonce = web3.ethGetTransactionCount(
@@ -115,8 +115,8 @@ public class DefaultDeployProcessor implements DeployProcessor{
 
 
   @Override
-  public @Pattern(regexp = "0x[0-9A-Fa-f]{1,40}") String process(
-      @Pattern(regexp = "0x[0-9A-Fa-f]{1,40}") final String senderAddress,
+  public @Pattern(regexp = "0x[0-9A-Fa-f]{40}") String process(
+      @Pattern(regexp = "0x[0-9A-Fa-f]{40}") @NotNull final String senderAddress,
       @NotBlank final String byteCode){
 
     return this.process(senderAddress, byteCode, this.defaultGasPrice, this.defaultGasLimit);

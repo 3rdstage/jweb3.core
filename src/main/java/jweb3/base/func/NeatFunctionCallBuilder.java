@@ -5,8 +5,8 @@ import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
 import org.web3j.abi.datatypes.StructType;
@@ -118,13 +118,13 @@ public class NeatFunctionCallBuilder{
     return this;
   }
 
-  public NeatFunctionCallBuilder sintArray(@Nonnull @NotEmpty final long ... value) {
+  public NeatFunctionCallBuilder sintArray(@NotEmpty final long ... value) {
     this.bldr.addIntArrayArg(value);
     return this;
   }
 
   public NeatFunctionCallBuilder address(
-      @NotBlank @Pattern(regexp = "0x[0-9a-fA-F]{1,40}") final String value) {
+      @Pattern(regexp = "0x[0-9a-fA-F]{40}") @NotNull final String value) {
     this.bldr.addAddressArg(value);
     return this;
   }

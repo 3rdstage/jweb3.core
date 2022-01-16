@@ -2,9 +2,10 @@ package jweb3.base.tx;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -29,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  *
  * @author Sangmoon Oh
+ * @since 0.8
  *
  * @see Appendix F of <a href='https://ethereum.github.io/yellowpaper/paper.pdf'>Ethereum Yellow Paper</a>
  */
@@ -71,14 +73,14 @@ public class LegacyTransaction implements Transaction{
   /**
    * @return <strong>r</strong> value of sinature or empty array if signature is not yet specified.
    */
-  @Nonnull public byte[] getR() { return this.r; }
+  public byte @NotEmpty [] getR() { return this.r; }
 
   private final byte[] s;
 
   /**
    * @return <strong>s</strong> value of sinature or empty array if signature is not yet specified.
    */
-  @Nonnull public byte[] getS() { return this.s; }
+  public byte @NotEmpty [] getS() { return this.s; }
 
 
   /**
@@ -96,15 +98,18 @@ public class LegacyTransaction implements Transaction{
    *
    * @see section 4.2 of <a href='https://ethereum.github.io/yellowpaper/paper.pdf'>Ethereum Yellow Paper</a>
    */
-  protected LegacyTransaction(final BigInteger nonce,
-      @PositiveOrZero final BigInteger gasPrice,
-      @Positive final BigInteger gasLimit,
-      @Pattern(regexp = "0x[0-9A-Fa-f]{1,40}") @Nullable String to,
-      final BigInteger value,
-      @Pattern(regexp = "0x[0-9A-Fa-f]*") String data,
+  protected LegacyTransaction(
+      @PositiveOrZero @NotNull final BigInteger nonce,
+      @PositiveOrZero @NotNull final BigInteger gasPrice,
+      @Positive @NotNull final BigInteger gasLimit,
+      @Pattern(regexp = "0x[0-9A-Fa-f]{40}") @Nullable String to,
+      @NotNull final BigInteger value,
+      @Pattern(regexp = "(0x)?[0-9A-Fa-f]*") @Nullable String data,
       final byte[] v,
       final byte[] r,
       final byte[] s) {
+
+    // the most general case
 
     // TODO input valiation
     // TODO(Done) What if `to` is null - `to` would be null when the tx is for contract creation.
@@ -115,34 +120,47 @@ public class LegacyTransaction implements Transaction{
     this.gasLimit = gasLimit;
     this.to = to;
     this.value = value;
-    this.data = data;
+    this.data = (data != null) ? data : "";
     this.v = v;
     this.r = (r != null) ? r : new byte[]{};
     this.s = (s != null) ? s : new byte[]{};
 
   }
 
+  // general function call transaction
   public LegacyTransaction(final BigInteger nonce,
-      @PositiveOrZero final BigInteger gasPrice,
-      @Positive final BigInteger gasLimit,
-      @Nonnull @Pattern(regexp = "0x[0-9A-Fa-f]{1,40}") String to,
-      final BigInteger value,
-      @Pattern(regexp = "0x[0-9A-Fa-f]*") final String data,
+      @PositiveOrZero @NotNull final BigInteger gasPrice,
+      @Positive @NotNull final BigInteger gasLimit,
+      @Pattern(regexp = "0x[0-9A-Fa-f]{40}") @NotNull String to,
+      @Pattern(regexp = "0x[0-9A-Fa-f]*") @NotNull final String data,
       final long chainId) {
 
-    this(nonce, gasPrice, gasLimit, to, value, data,
+    this(nonce, gasPrice, gasLimit, to, BigInteger.ZERO, data,
         ByteBuffer.allocate(Long.BYTES).putLong(chainId).array(), null, null);
 
   }
 
+  // contract deployment
   public LegacyTransaction(final BigInteger nonce,
-      @PositiveOrZero final BigInteger gasPrice,
-      @Positive final BigInteger gasLimit,
-      final BigInteger value,
+      @PositiveOrZero @NotNull final BigInteger gasPrice,
+      @Positive @NotNull final BigInteger gasLimit,
       @Pattern(regexp = "0x[0-9A-Fa-f]*") final String init,
       final long chainId) {
 
-    this(nonce, gasPrice, gasLimit, null, value, init,
+    this(nonce, gasPrice, gasLimit, null, BigInteger.ZERO, init,
+        ByteBuffer.allocate(Long.BYTES).putLong(chainId).array(), null, null);
+
+  }
+
+  // Ether transfer
+  public LegacyTransaction(final BigInteger nonce,
+      @PositiveOrZero @NotNull final BigInteger gasPrice,
+      @Positive @NotNull final BigInteger gasLimit,
+      @Pattern(regexp = "0x[0-9A-Fa-f]{40}") @Nullable String to,
+      @NotNull final BigInteger value,
+      final long chainId) {
+
+    this(nonce, gasPrice, gasLimit, to, value, null,
         ByteBuffer.allocate(Long.BYTES).putLong(chainId).array(), null, null);
 
   }
@@ -151,7 +169,7 @@ public class LegacyTransaction implements Transaction{
 //  public LegacyTransaction(final BigInteger nonce,
 //      @PositiveOrZero final BigInteger gasPrice,
 //      @Positive final BigInteger gasLimit,
-//      @Pattern(regexp = "0x[0-9A-Fa-f]{1,40}") @Nullable String to,
+//      @Pattern(regexp = "0x[0-9A-Fa-f]{40}") @Nullable String to,
 //      final BigInteger value,
 //      @Pattern(regexp = "0x[0-9A-Fa-f]*") final String data,
 //      final long chainId,
@@ -162,7 +180,7 @@ public class LegacyTransaction implements Transaction{
 //  }
 
   @Override
-  public LegacyTransaction withSignature(@Nonnull final BigInteger r, @Nonnull final BigInteger s) {
+  public LegacyTransaction withSignature(@NotNull  final BigInteger r, @NotNull final BigInteger s) {
     return null;
   }
 

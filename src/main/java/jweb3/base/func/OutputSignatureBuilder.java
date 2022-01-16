@@ -2,7 +2,6 @@ package jweb3.base.func;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -32,7 +31,7 @@ public class OutputSignatureBuilder implements AbiAware{
   }
 
   @SuppressWarnings("unchecked")
-  public void appendParam(@Nonnull @NotBlank final String solidityType) {
+  public void appendParam(@NotBlank final String solidityType) {
 
     try {
       this.params.add(TypeReference.makeTypeReference(solidityType));
