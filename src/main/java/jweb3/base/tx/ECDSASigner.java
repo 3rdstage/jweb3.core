@@ -10,6 +10,9 @@ import org.bouncycastle.crypto.params.ECDomainParameters;
 /**
  * @author Sangmoon Oh
  * @since 0.8
+ *
+ * @see <a href="https://github.com/bcgit/bc-java/blob/r1rv68/core/src/main/java/org/bouncycastle/crypto/signers/ECDSASigner.java#L93"><tt>org.bouncycastle.crypto.signers.ECDSASigner.generateSignature(byte[])</tt></a>
+ * @see <a href="https://github.com/indutny/elliptic/blob/43ac7f230069bd1575e1e4a58394a512303ba803/lib/elliptic/ec/index.js#L91"><tt>elliptic.EC.prototype.sign(msg, key, enc, options)</tt></a>
  */
 public interface ECDSASigner{
 
